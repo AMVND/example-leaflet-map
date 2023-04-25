@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    #map {
+        width: 100vw;
+        height: 100vh;
+    }
+</style>
+
+<body>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+
+    <div id="map"></div>
+
+    <!-- KHAI BÁO JQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    <!-- BẢN ĐỒ -->
+    <script>
+        //Khai báo bản đồ
+        const map = L.map('map', {
+            center: [38.9188702, -77.0708398],
+            zoom: 4
+        });
+
+        ////FILE .CAD khai báo dạng geojson
+        $.getJSON("./example.geojson", function (data) {
+            var datalayer = L.geoJson(data, {
+                onEachFeature: function (feature, featureLayer) {
+                    featureLayer.bindPopup(feature.properties.NAME_1);
+                }
+            }).addTo(map);
+            map.fitBounds(datalayer.getBounds());
+        });
+
+
+        //Các lớp bản đồ
+        const basemaps = {
+            StreetView: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+            Topography: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'),
+            Satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
+        };
+
+        //Lớp bản đồ chính
+        basemaps.Satellite.addTo(map);
+
+        //Thêm bản đồ vào màn hình
+        L.control.layers(basemaps).addTo(map);
+
+        //Khai báo điểm
+        const marker1 = L.marker([38.9188702, -77.0708398]).bindTooltip("Hello!! It's me GAY SUPER TIER").addTo(map);
+
+
+
+    </script>
+</body>
+
+</html>
